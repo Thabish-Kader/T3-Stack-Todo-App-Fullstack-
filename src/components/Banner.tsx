@@ -4,29 +4,33 @@ import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { trpc } from "../utils/trpc";
 import { TodoCards } from "./TodoCards";
+import { useRouter } from "next/router";
 
 export const Banner = () => {
   const [show, setShow] = useState<boolean>(false);
   const [todo, setTodo] = useState<string>("");
   const [todoList, setTodoList] = useState<Todo[]>([]);
   const { register, handleSubmit } = useForm<Todo>();
-  const { data, refetch, isSuccess } = trpc.todo.showTodo.useQuery(undefined);
-
-  useEffect(() => {
-    if (isSuccess) {
-    }
+  const { data, refetch, isSuccess } = trpc.todo.showTodo.useQuery(undefined, {
+    onSuccess: (todoData) => setTodoList(todoData),
   });
-
+  const router = useRouter();
   const addTodo = trpc.todo.createTodo.useMutation({
     onSuccess: (data) => {
       setTodoList((prev) => [...prev, data]);
     },
   });
 
+  // Call this function whenever you want to
+  // refresh props!
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
   const onSubmit: SubmitHandler<Todo> = (data) => {
     addTodo.mutate({ todo: data.todo, priority: data.priority });
     setShow(!show);
-    console.log(data.todo, data.priority);
+    refreshData();
   };
 
   return (

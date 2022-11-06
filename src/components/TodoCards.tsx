@@ -28,7 +28,6 @@ export const TodoCards: FC<TodoProps> = ({
       priority: data.priority,
     });
     setShow(!show);
-    console.log(data.id);
   };
 
   return (
