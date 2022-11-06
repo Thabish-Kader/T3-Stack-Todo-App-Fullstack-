@@ -14,7 +14,8 @@ This full stack todo project was done in order to learn T3 stack development flo
 
 - [useQuery](https://tanstack.com/query/v4/docs/reference/useQuery?from=reactQueryV3&original=https://react-query-v3.tanstack.com/reference/useQuery)
 - [useMutation](https://tanstack.com/query/v4/docs/reference/useMutation)
-- [useForm](https://react-hook-form.com/) -[Video on T3 Stack](https://www.youtube.com/watch?v=PbjHxIuHduU)
+- [useForm](https://react-hook-form.com/) 
+- [Video on T3 Stack](https://www.youtube.com/watch?v=PbjHxIuHduU)
 
 ### Screenshots
 
