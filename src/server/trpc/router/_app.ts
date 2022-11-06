@@ -3,6 +3,7 @@ import { authRouter } from "./auth";
 import { todoRouter } from "./todoRouter";
 
 export const appRouter = router({
+  // todo router
   todo: todoRouter,
   auth: authRouter,
 });

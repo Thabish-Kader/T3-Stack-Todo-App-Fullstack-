@@ -3,7 +3,7 @@ import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
 
 export const todoRouter = router({
-  // Create to do route
+  // Create call
   createTodo: publicProcedure
     .input(
       z.object({
@@ -24,6 +24,7 @@ export const todoRouter = router({
     const todos = await ctx.prisma.todo.findMany();
     return todos;
   }),
+  // delete call
   deleteTodo: publicProcedure
     .input(
       z.object({
@@ -34,6 +35,26 @@ export const todoRouter = router({
       return ctx.prisma.todo.delete({
         where: {
           id: input.id,
+        },
+      });
+    }),
+  // update call
+  updateTodo: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        todo: z.string(),
+        priority: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      return ctx.prisma.todo.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          todo: input.todo,
+          priority: input.priority,
         },
       });
     }),
