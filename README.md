@@ -9,6 +9,7 @@ This full stack todo project was done in order to learn T3 stack development flo
 - Data Flow in T3 Stack
 - Trpc
 - Api type safety
+- Zod
 
 ### Resources
 
