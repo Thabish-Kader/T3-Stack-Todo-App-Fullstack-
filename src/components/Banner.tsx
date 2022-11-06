@@ -10,6 +10,8 @@ export const Banner = () => {
   const [todo, setTodo] = useState<string>("");
   const [todoList, setTodoList] = useState<Todo[]>([]);
   const { register, handleSubmit } = useForm<Todo>();
+  const { data } = trpc.todo.showTodo.useQuery(undefined);
+
   const addTodo = trpc.todo.createTodo.useMutation({
     onSuccess: (data) => {
       setTodoList((prev) => [...prev, data]);
@@ -36,8 +38,15 @@ export const Banner = () => {
           </button>
         </div>
       </div>
-      <div>
-        <TodoCards />
+      <div className="mt-3 grid gap-1 sm:grid-cols-2 md:grid-cols-3">
+        {data?.map((items) => (
+          <TodoCards
+            key={items.id}
+            todo={items.todo}
+            priority={items.priority}
+            dateCreated={items.createdAt}
+          />
+        ))}
       </div>
 
       {/* Pop for when add to do button is clicked */}
