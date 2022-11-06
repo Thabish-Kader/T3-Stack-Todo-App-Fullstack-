@@ -9,8 +9,6 @@ import { Navbar } from "../components/Navbar";
 import { Banner } from "../components/Banner";
 
 const Home: NextPage = () => {
-  const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
-
   return (
     <>
       <Head>

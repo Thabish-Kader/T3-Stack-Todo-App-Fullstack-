@@ -1,11 +1,30 @@
+import { Todo } from "@prisma/client";
+import { Mutation } from "@tanstack/react-query";
 import React, { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { trpc } from "../utils/trpc";
+import { TodoCards } from "./TodoCards";
 
 export const Banner = () => {
   const [show, setShow] = useState<boolean>(false);
+  const [todo, setTodo] = useState<string>("");
+  const [todoList, setTodoList] = useState<Todo[]>([]);
+  const { register, handleSubmit } = useForm<Todo>();
+  const addTodo = trpc.todo.createTodo.useMutation({
+    onSuccess: (data) => {
+      setTodoList((prev) => [...prev, data]);
+    },
+  });
+
+  const onSubmit: SubmitHandler<Todo> = (data) => {
+    addTodo.mutate({ todo: data.todo, priority: data.priority });
+    setShow(!show);
+    console.log(data.todo, data.priority);
+  };
 
   return (
-    <section className="h-screen w-full bg-white py-20">
-      <div className="mx-auto max-w-3xl ">
+    <section className="mx-auto h-screen w-full max-w-6xl bg-white px-2 py-20">
+      <div className="mx-auto w-full ">
         <div className="flex justify-between">
           <h2 className="text-2xl font-semibold">My Todos</h2>
           <button
@@ -16,47 +35,12 @@ export const Banner = () => {
             Add Todo
           </button>
         </div>
-        <ul>
-          {/* {data?.map((item) => {
-            const { id, name, checked } = item;
-            return (
-              <li key={id} className="my-1 flex items-center justify-between">
-                <div className="relative">
-                  <div className="pointer-events-none absolute inset-0 flex origin-left items-center justify-center">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{
-                        width: checkedItems.some((item) => item.id === id)
-                          ? "100%"
-                          : 0,
-                      }}
-                      transition={{ duration: 0.2, ease: "easeInOut" }}
-                      className="h-[2px] w-full translate-y-px bg-red-500"
-                    />
-                  </div>
-                  <span
-                    onClick={() =>
-                      checkItem.mutate({
-                        id,
-                        checked: checkedItems.some((item) => item.id === id)
-                          ? false
-                          : true,
-                      })
-                    }
-                  >
-                    {name}
-                  </span>
-                </div>
-                <HiX
-                  onClick={() => deleteItem.mutate({ id })}
-                  size={24}
-                  className="cursor-pointer text-red-500"
-                />
-              </li>
-            );
-          })} */}
-        </ul>
       </div>
+      <div>
+        <TodoCards />
+      </div>
+
+      {/* Pop for when add to do button is clicked */}
       {show && (
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/70">
           <div className="flex flex-col items-center justify-between">
@@ -64,22 +48,36 @@ export const Banner = () => {
               <h1 className="py-3 text-center text-2xl font-bold uppercase text-white">
                 Add Item
               </h1>
-              <input
-                type="text"
-                className="rounded-lg border border-black bg-gray-800 p-1 text-white placeholder:text-white"
-                placeholder="Add Todo"
-              />
-              <div className="grid grid-cols-2 gap-1 py-2">
-                <button className=" rounded-lg bg-green-500 p-2 text-lg font-medium duration-500 hover:scale-110 hover:bg-white">
-                  Add
-                </button>
-                <button
-                  onClick={() => setShow(false)}
-                  className="rounded-lg bg-gray-500 p-2 text-lg font-medium duration-500 hover:scale-110 hover:bg-white"
-                >
-                  Cancel
-                </button>
-              </div>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="grid">
+                  <input
+                    {...register("todo")}
+                    type="text"
+                    onChange={(e) => setTodo(e.target.value)}
+                    className="rounded-lg border border-black bg-gray-800 p-1 text-white placeholder:text-white"
+                    placeholder="Add Todo"
+                  />
+                  <select
+                    {...register("priority")}
+                    className="my-2 rounded-lg bg-gray-800 p-1 text-white"
+                  >
+                    <option value="!!!!!">High</option>
+                    <option value="!!!">Medium</option>
+                    <option value="!">Low</option>
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-1 py-2">
+                  <button className=" rounded-lg bg-green-500 p-2 text-lg font-medium duration-500 hover:scale-110 hover:bg-white">
+                    Add
+                  </button>
+                  <button
+                    onClick={() => setShow(false)}
+                    className="rounded-lg bg-gray-500 p-2 text-lg font-medium duration-500 hover:scale-110 hover:bg-white"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
