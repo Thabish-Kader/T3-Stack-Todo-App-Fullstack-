@@ -1,6 +1,6 @@
 import { Todo } from "@prisma/client";
 import { Mutation } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { trpc } from "../utils/trpc";
 import { TodoCards } from "./TodoCards";
@@ -10,7 +10,12 @@ export const Banner = () => {
   const [todo, setTodo] = useState<string>("");
   const [todoList, setTodoList] = useState<Todo[]>([]);
   const { register, handleSubmit } = useForm<Todo>();
-  const { data } = trpc.todo.showTodo.useQuery(undefined);
+  const { data, refetch, isSuccess } = trpc.todo.showTodo.useQuery(undefined);
+
+  useEffect(() => {
+    if (isSuccess) {
+    }
+  });
 
   const addTodo = trpc.todo.createTodo.useMutation({
     onSuccess: (data) => {
@@ -42,6 +47,7 @@ export const Banner = () => {
         {data?.map((items) => (
           <TodoCards
             key={items.id}
+            id={items.id}
             todo={items.todo}
             priority={items.priority}
             dateCreated={items.createdAt}
